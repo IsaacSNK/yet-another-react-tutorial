@@ -1,40 +1,35 @@
 import './App.css';
 
 import React from 'react';
+import { StarWarsCharacters } from './components/StarWarsCharacters';
+import { StarWarsClient } from './clients/StarWarsClient';
 import logo from './logo.svg';
 
 export class App extends React.Component {
+  starWarsClient = new StarWarsClient();
+
   constructor()  {
     super();
     this.state = {
-      counter: 0
+      data: []
     }
   }
   
   componentDidMount() {
-    this.interval = setInterval(() => {
-      const newCounter = this.state.counter + 1;
-      this.setState({
-        counter: newCounter
-      })
-    }, 1000);
+    this.loadData();
   }
 
-  componentWillUnmount() {
-    clearInterval(this.interval);
+  async loadData() {
+    const newData = await this.starWarsClient.getStarWarsData();
+    this.setState({
+      data: newData
+    });
   }
-
 
   render() {
     return (
       <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Hello World!
-          </p>
-          { this.state.counter }
-        </header>
+        <StarWarsCharacters characters={this.state.data}></StarWarsCharacters>
       </div>
     );
   }
